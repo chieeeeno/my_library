@@ -1,0 +1,12 @@
+.dragable{
+    width: 200px;
+    height: 200px;
+    background:#767272;
+    color: #fff;
+    &.red{
+        background: #ff7d7d;
+    }
+    &.blue{
+        background: #6bc0ff;
+    }
+}

@@ -1,0 +1,14 @@
+.dragable {
+  width: 200px;
+  height: 200px;
+  background: #767272;
+  color: #fff;
+}
+.dragable.red {
+  background: #ff7d7d;
+}
+.dragable.blue {
+  background: #6bc0ff;
+}
+
+/*# sourceMappingURL=style.css.map */

@@ -1,0 +1,24 @@
+{
+  "name": "sample",
+  "version": "0.0.0",
+  "description": "sample",
+  "main": "Gruntfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "tomoki kikuchi",
+  "license": "BSD",
+  "devDependencies": {
+    "connect-livereload": "~0.3.2",
+    "grunt": "~0.4.5",
+    "grunt-contrib-compass": "~0.7.1",
+    "grunt-contrib-concat": "*",
+    "grunt-contrib-connect": "~0.6.0",
+    "grunt-contrib-copy": "*",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-exec": "~0.4.3",
+    "grunt-open": "~0.2.3",
+    "path": "~0.4.9"
+  }
+}

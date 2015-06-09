@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+    <title>jQuery.dragable sample</title>
+    <meta name="Author" content=""/>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="js/jquery.2.1.1.min.js"></script>
+    <script src="js/jquery.dragable.0.1.js"></script>
+</head>
+<body>
+    <div class="dragable">
+    1
+    </div>
+    <div class="dragable red">
+       2
+    </div>
+    <div class="dragable blue">
+        3
+    </div>
+    <script>
+        $('.dragable').dragable({
+            onTouchStart:function(){
+                console.log('移動中');
+            },
+            onTouchEnd:function(){
+                console.log('移動終了');
+            },
+            onClick:function(){
+                console.log('クリックされたぜ！');
+            },
+            clickEvent:true,
+            initFunc:function(){
+                console.log('初期処理実行');
+            }
+        })
+    </script>
+</body>
+</html>
