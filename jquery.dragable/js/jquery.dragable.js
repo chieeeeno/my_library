@@ -6,40 +6,36 @@
     var touchStartEvent =  support.touch ? 'touchstart' : 'mousedown';
     var touchMoveEvent =  support.touch ? 'touchmove' : 'mousemove';
     var touchEndEvent =  support.touch ? 'touchend' : 'mouseup';
-    
     var defaults = {
         clickEvent:true,
         initFunc:function(){},
         onTouchStart:function(){},
         onTouchEnd:function(){},
+        onTouchMove:function(){},
         onClick:function(){}
     };
-    
-    
+
     $.fn.dragable = function(option){
         var setting = {};
         var $dragTarget = this;
-
         var init = function(){
             setting = $.extend({},defaults,option);
             setting.initFunc();
         }
-
-        
-        
         if(this.length == 0){
+            //alert(0);
             return this;
         }
         // support mutltiple elements
         if(this.length > 1){
             this.each(function(){$(this).dragable(option)});
-            //setting.callbackFunc();
             return this;
         }
         
         //初期処理
         init();
         
+        //ドラッグ開始時の処理
         $dragTarget.bind(touchStartEvent,function(e){
             var self = this;
             e.preventDefault();
@@ -62,7 +58,7 @@
                 'webkitTransitionDuration':'0s'
             });
 
-            //ドラッグスタート時の処理
+            //ドラッグ開始時に実行
             setting.onTouchStart();
 
             $(document).bind(touchMoveEvent,function(e){   //ドラッグ中
@@ -76,7 +72,10 @@
                 });
                 self.pageX = getPage(e,'pageX');
                 self.pageY = getPage(e,'pageY');
-
+                
+                //ドラッグ中に実行
+                setting.onTouchMove();
+                
             }).bind(touchEndEvent,function(e){    //ドラッグ終了
                 self._endPos = {x:self._left,y:self._top};
                 if(!self.touched){return;}
@@ -88,14 +87,14 @@
                 $(this).unbind(touchMoveEvent);
                 $(this).unbind(touchEndEvent);
                 
-                //その場でクリックした時の処理
-                if(setting.clickEvent){
-                    if(!moveCheck(self._startPos,self._endPos)){
-                        setting.onClick();
-                    }
+                //その場でクリックした時に実行
+                if(setting.clickEvent && !moveCheck(self._startPos,self._endPos)){
+                    setting.onClick();
+                }else{
+                    //ドラッグ終了時に実行
+                    setting.onTouchEnd();
                 }
-                //ドラッグ終了時の処理
-                setting.onTouchEnd();
+                
             });
         });
         return(this);
