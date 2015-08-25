@@ -1,0 +1,183 @@
+<!DOCTYPE HTML>
+<html xml:lang="ja" lang="ja">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="format-detection" content="telephone=no" >
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="cache-control" content="no-cache, no-store">
+<meta http-equiv="Expires" content="0">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+
+<script src="//cdn.jsdelivr.net/jquery/2.1.4/jquery.min.js"></script>
+
+<title>ABCアプリ</title>
+
+<style>
+*{margin:0; padding:0}
+html{font-family:"ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "メイリオ", Meiryo, Osaka, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif}
+body{font-size:20px;}
+li{margin:0 0 20px 0;}
+    h1{padding:10px 0 10px 0; margin:0 0 20px 0; text-align:center; font-size:20px; font-weight:bold; background:#F74FC7; color:#ffffff;}
+    
+    .warpper{
+        padding: 3%;        
+    }
+    dl{
+        width: 30.8%;
+        float: left;
+        margin-right: 3.5%;
+        margin-bottom: 6%;
+        border: solid 1px #F74FC7;
+        background: #ffebf9;
+    }
+    dl:nth-child(3n){
+        margin-right: 0;
+    }
+    dt{
+        background: #F74FC7;
+        text-align: center;
+        color: #fff;
+        font-weight: bold;
+        font-size: 70%;
+        line-height: 2.5;
+        
+    }
+    dd{
+        padding: 3%;
+        font-size: 70%;
+    }
+    
+    .clearfix:after{
+        content: "";
+        display: block;
+        clear: both;
+    }
+    
+    @media screen and (max-width: 640px) {
+        dl{
+            width: auto;
+            height: auto!important;
+            float: none;
+            margin-right: auto;
+        }
+    }
+    
+    </style>
+
+<script>
+    function LaunchApp(){
+        if(window.confirm('ABCアプリを起動します')){
+            location.href = 'PortalApps://';
+        }
+    }
+</script>
+   
+<script>
+    function winOpen(url){
+        var newWin = window.open(url, 'newWin', 'width=400, height=650, menubar=no, toolbar=yes, scrollbars=yes, resizable=no');
+        newWin.focus();
+    }
+    
+
+
+
+    function setHeight(){
+        //一行あたりの要素数=列数を変数に格納
+        var columns = 3;
+        //該当するli要素の数を取得
+        var liLen = $('.itemBlock dl').length;
+        //行の数を取得
+        var lineLen = Math.ceil(liLen / columns);
+        //各li要素の高さの配列
+        var liHiArr = [];
+        //行の高さの配列
+        var lineHiArr = [];
+        
+        //liの高さを配列に格納後、それが行の中で一番高い値であれば行の高さとして格納していく繰り返し文
+        for (i = 0; i <= liLen; i++) {
+            liHiArr[i] = $('.itemBlock dl').eq(i).height();
+            if (lineHiArr.length <= Math.floor(i / columns)
+                || lineHiArr[Math.floor(i / columns)] < liHiArr[i])
+            {
+                lineHiArr[Math.floor(i / columns)] = liHiArr[i];
+            }
+        }
+
+        //.eachでそれぞれのliの高さを変更
+        $('.itemBlock dl').each(function(i){
+            $(this).css('height',lineHiArr[Math.floor(i / columns)] + 'px');
+        });
+    }
+    
+    
+    $(function () {
+        setHeight();
+    });
+    
+    $(window).resize(function(){
+        setHeight();
+    });
+
+</script>
+</head>
+
+<body>
+<h1>ABCアプリ</h1>
+    <div class="warpper itemBlock clearfix">
+        <dl>
+            <dt>おは朝新聞</dt>
+            <dd><a href="ohaasa/newspaper/index.html" target="_blank">おは朝新聞</a></dd>
+            <dd><a href="ohaasa/calendar/index.html" target="_blank">カレンダー</a></dd>
+            <dd><a href="ohaasa/help/index.html" target="_blank">ヘルプ</a></dd>
+        </dl>
+<!--
+        <dl>
+            <dt>ねったまくんじゃんけん2015(プレサイト)</dt>
+            <dd><a href="special/nettama2015_pre/index.html" target="_blank">インデックスページ</a></dd>
+            <dd><a href="special/nettama2015_pre/about.html" target="_blank">じゃんけんって何？</a></dd>
+            <dd><a href="special/nettama2015_pre/collection.html" target="_blank">レアキャラスタンプラリー</a></dd>
+            <dd><a href="special/nettama2015_pre/present.html" target="_blank">プレゼント</a></dd>
+        </dl>
+        <dl>
+            <dt>ねったまくんじゃんけん2015</dt>
+            <dd><a href="special/nettama2015/index.html" target="_blank">インデックスページ</a></dd>
+            <dd><a href="special/nettama2015/battle.html" target="_blank">じゃんけんページ</a></dd>
+            <dd><a href="special/nettama2015/about.html" target="_blank">じゃんけんって何？</a></dd>
+            <dd><a href="special/nettama2015/collection.html" target="_blank">レアキャラスタンプラリー</a></dd>
+            <dd><a href="special/nettama2015/ranking.html" target="_blank">ランキング</a></dd>
+            <dd><a href="special/nettama2015/present.html" target="_blank">プレゼント</a></dd>
+            <dd><a href="special/nettama2015/sorry.html" target="_blank">sorry</a></dd>
+        </dl>
+        <dl>
+            <dt>ねったまくんじゃんけん2015（本番環境）</dt>
+            <dd><a href="http://count.asahi.co.jp/abcapp/content/special/nettama2015/index.html" target="_blank">インデックスページ</a></dd>
+            <dd><a href="http://count.asahi.co.jp/abcapp/content/special/nettama2015/battle.html" target="_blank">じゃんけんページ</a></dd>
+            <dd><a href="http://count.asahi.co.jp/abcapp/content/special/nettama2015/about.html" target="_blank">じゃんけんって何？</a></dd>
+            <dd><a href="http://count.asahi.co.jp/abcapp/content/special/nettama2015/collection.html" target="_blank">レアキャラスタンプラリー</a></dd>
+            <dd><a href="http://count.asahi.co.jp/abcapp/content/special/nettama2015/ranking.html" target="_blank">ランキング</a></dd>
+            <dd><a href="http://count.asahi.co.jp/abcapp/content/special/nettama2015/present.html" target="_blank">プレゼント</a></dd>
+        </dl>
+-->
+        <dl>
+            <dt>タイムライン</dt>
+            <dd><a href="timeline/index.html" target="_blank">タイムライン</a></dd>
+            <dd><a href="timeline/index.html?viewmode=favorite" target="_blank">お気に入り</a></dd>
+        </dl>
+        <dl>
+            <dt>クーポンテスト</dt>
+            <dd><a href="_coupon_test/index.html?cpid=999" target="_blank">クーポンインデックス</a></dd>
+        </dl>
+        <dl>
+            <dt>アプリデータ</dt>
+            <dd><a href="_data/ABCapp_Ver131_20150424_test_timeline.apk" target="_blank">android版 ver.1.3.1</a></dd>
+        </dl>
+    </div>
+    
+<br>
+<br>
+
+
+
+</body>
+</html>
