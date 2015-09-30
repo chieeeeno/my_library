@@ -1,23 +1,25 @@
 {
-  "name": "gulp-sample",
-  "version": "1.0.0",
-  "description": "",
-  "main": "gulpfile.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Megumi Hano",
-  "license": "MIT",
-  "devDependencies": {
-    "browser-sync": "^2.8.2",
-    "gulp": "latest",
-    "gulp-autoprefixer": "latest",
-    "gulp-concat": "latest",
-    "gulp-plumber": "latest",
-    "gulp-prettify": "latest",
-    "gulp-rename": "latest",
-    "gulp-ruby-sass": "0.7.0",
-    "gulp-uglify": "latest",
-    "gulp.spritesmith": "latest"
-  }
+    "name": "gulp_template",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "tomoki kikuchi",
+    "license": "ISC",
+    "devDependencies": {
+        "gulp": "*",
+        "gulp-sass": "*",
+        "gulp-autoprefixer": "*",
+        "gulp-uglify": "*",
+        "browser-sync": "*",
+        "gulp-plumber": "*",
+        "gulp-compass": "*",
+        "gulp-cached": "*",
+        "sass-graph": "*",
+        "gulp-if": "*",
+        "gulp-foreach": "*",
+        "gulp-jade": "*"
+    }
 }

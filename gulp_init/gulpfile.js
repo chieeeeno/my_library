@@ -1,142 +1,100 @@
-/***************************************************************************
-* DEPENDENCIES
-***************************************************************************/
+'use strict';
 
-var gulp         = require('gulp'),
-    autoprefixer = require('gulp-autoprefixer'),
-    browserSync  = require('browser-sync'),
-    concat       = require('gulp-concat'),
-    plumber      = require('gulp-plumber'),
-    reload       = browserSync.reload,
-    rename       = require('gulp-rename'),
-    rubySass     = require('gulp-ruby-sass'),
-    sprite       = require('gulp.spritesmith'),
-    uglify       = require('gulp-uglify')
-;
+var gulp = require('gulp');
+var sass = require("gulp-sass");
+var autoprefixer = require("gulp-autoprefixer");
+var uglify = require("gulp-uglify");
+var browser = require("browser-sync");
+var plumber = require("gulp-plumber");
+var jade = require('gulp-jade');
+var cache = require('gulp-cached');
+var grapher = require('sass-graph');
+var gulpIf = require('gulp-if');
+var forEach = require('gulp-foreach');
 
-/***************************************************************************
-* FILE DESTINATIONS
-***************************************************************************/
+// gulp.task(“タスク名”,function() {});でタスクの登録をおこないます。
+// gulp.src(“MiniMatchパターン”)で読み出したいファイルを指定します。
+// pipe(行いたい処理)でsrcで取得したファイルに処理を施します
+// gulp.dest(“出力先”)で出力先に処理を施したファイルを出力します。
 
-var paths = {
-  'dest'      : './',
-  'vhost'     : 'local.dev',
-  'port'      : 3000,
-// html
-  'htmlDest'  : './',
-  'htmlFiles' : './*.html',
-// images
-  'imgDest'   : 'dist/img',
-  'imgDir'    : 'src/img',
-// js
-  'jsFiles'   : 'src/js/**/*.js',
-  'jsDest'    : 'dist/js',
-// scss
-  'scssDest'  : 'src/scss',
-  'scssFiles' : 'src/scss/**/*.scss',
-// css
-  'cssDest'   : 'dist/css'
-}
+// “sass/style.scss” sass/style.scssだけヒット
+// “sass/*.scss” sassディレクトリ直下にあるscssがヒット
+// “sass/**/*.scss” sassディレクトリ以下にあるすべてのscssがヒット
+// [“sass/**/.scss”,"!sass/sample/**/*.scss] sass/sample以下にあるscssを除くsassディレクトリ以下のscssがヒット
 
-/***************************************************************************
-* browser-sync
-***************************************************************************/
+var srcDir = "./source/";
+var basedir = "./dest/";
+var dir = basedir;
 
- //Local server
- gulp.task('browser-sync', function() {
-      browserSync({
-           proxy: paths.vhost,
-           open: 'external'
-      });
- });
-
-//Static server
-gulp.task('browser-sync', function() {
-  browserSync({
-    server: {
-      baseDir: paths.dest
-    },
-    startPath: paths.htmlDest
-  });
+gulp.task("server", function() {
+    browser({
+        server: {
+            baseDir: basedir
+        }
+    });
 });
 
-// Reload all browsers
-gulp.task('bs-reload', function() {
-  browserSync.reload()
-});
-
-/***************************************************************************
-* image tasks
-***************************************************************************/
-
-gulp.task('sprite', function() {
-  var spriteData = gulp.src(paths.imgDir + '/sprite/*.png')
-  .pipe(sprite({
-    imgName: 'sprite.png',
-    imgPath: '/' + paths.imgDest + '/sprite.png',
-    cssName: '_module-sprite.scss'
-  }));
-  spriteData.img.pipe(gulp.dest(paths.imgDest));
-  spriteData.css.pipe(gulp.dest(paths.scssDest + '/module'));
-});
-
-/***************************************************************************
-* js tasks
-***************************************************************************/
-
-gulp.task('jsLib', function() {
-  return gulp.src(paths.jsFiles)
-    .pipe(concat('lib.js'))
-    .pipe(uglify())
-    .pipe(rename({ suffix: '.min' }))
-    .pipe(gulp.dest(paths.jsDest))
-    .pipe(browserSync.reload({ stream: true }));
-});
-
-/***************************************************************************
-* Sass tasks
-***************************************************************************/
-
-gulp.task('rubySass', function () {
-    gulp.src(paths.scssFiles)
+gulp.task("js", function() {
+    gulp.src([srcDir + "/**/*.js", "!"+srcDir + "/_copythis/**/*", "!"+srcDir + "/_partial/**/*"])
         .pipe(plumber())
-        .pipe(rubySass({
-          r: 'sass-globbing',
-          'sourcemap=none': true
-        }))
-        .pipe(autoprefixer("last 2 version"))
-        .pipe(gulp.dest(paths.cssDest))
-        .pipe(reload({ stream: true }));
+        .pipe(uglify())
+        .pipe(gulp.dest(dir))
+        .pipe(browser.reload({stream:true}));
+});
+
+gulp.task("sass", function() {
+    var graph;
+    //baseDir = "./source/";
+    graph = grapher.parseDir(srcDir);
+    gulp.src([srcDir + "/**/*.scss", "!"+srcDir + "/_copythis/**/*", "!"+srcDir + "/_partial/**/*"])
+        .pipe(plumber())
+        .pipe(cache('sass'))
+        .pipe(gulpIf(this.watching, forEach(function(currentStream, file) {
+            var addParent, files;
+            files = [file.path];
+            addParent = function(childPath) {
+                return graph.visitAncestors(childPath, function(parent) {
+                    if (!_.includes(files, parent)) {
+                        files.push(parent);
+                    }
+                    return addParent(parent);
+                });
+            };
+            addParent(file.path);
+            return gulp.src(files, {
+                base: srcDir
+            });
+        })))
+        .pipe(sass())
+        .pipe(autoprefixer())
+        .pipe(gulp.dest(dir))
+        .pipe(browser.reload({stream:true}));
+
+    gulp.src([srcDir + "/**/*.css", "!"+srcDir + "/_copythis/**/*", "!"+srcDir + "/_partial/**/*"])
+        .pipe(gulp.dest(dir))
+        .pipe(browser.reload({stream:true}));
+});
+
+gulp.task("html", function() {
+    gulp.src([srcDir + "/**/*.html", "!"+srcDir + "/_copythis/**/*", "!"+srcDir + "/_partial/**/*"])
+        .pipe(gulp.dest(dir))
+        .pipe(browser.reload({stream:true}));
+});
+
+gulp.task("img", function() {
+    gulp.src([srcDir + "/**/img/**/*", "!"+srcDir + "/_copythis/**/*", "!"+srcDir + "/_partial/**/*"])
+        .pipe(gulp.dest(dir))
+        .pipe(browser.reload({stream:true}));
 });
 
 
 
-gulp.task( 'copy', function() {
-    return gulp.src(
-        [ 'src/*.html', 'src/css/**', 'src/js/*.js' ],
-        { base: 'src' }
-    )
-        .pipe( gulp.dest( 'aaa' ) );
-} );
-
-
-/***************************************************************************
-* gulp tasks
-***************************************************************************/
-
-gulp.task('watch', function() {
-  gulp.watch([paths.imgDest + '/sprite/*.png'], ['sprite']);
-  gulp.watch([paths.htmlFiles], ['bs-reload']);
-  gulp.watch([paths.htmlFiles]);
-  gulp.watch([paths.jsDest], ['jsLib']);
-  gulp.watch([paths.scssFiles], ['rubySass']);
+gulp.task("default", ['server'], function() {
+    this.watching = true;
+    gulp.watch([srcDir + "/**/*.js", "!"+srcDir + "/**/min/**/*.js"], ["js"]);
+    gulp.watch([srcDir + "/**/*.scss", "!"+srcDir + "/**/*.css"], ["sass"]);
+    gulp.watch(srcDir + "/**/*.html", ["html"]);
+    gulp.watch(srcDir + "/**/img/**/*", ["img"]);
 });
 
-gulp.task('default', [
-    'browser-sync',
-    'bs-reload',
-    'jsLib',
-    'rubySass',
-    'sprite',
-    'watch'
-]);
+gulp.task("build", ['js', 'sass', 'html', 'img']);
